@@ -15,9 +15,16 @@ app.listen(serverConfig.PORT, () => {
     SampleWorker('SampleQueue');
 
     sampleQueueProducer('SampleJob', {
-        name: 'Sahil Shah',
+        name: 'Sahil A. Shah',
+        company: 'FlytBase',
+        position: 'Software Engineer (Backend)',
+        location: 'Remote | PUN'
+    }, 2);
+    
+    sampleQueueProducer('SampleJob', {
+        name: 'Sahil A. Shah',
         company: 'Barclays',
         position: 'Software Engineer',
         location: 'Remote | PUN | MUM'
-    });
+    }, 1);
 });
