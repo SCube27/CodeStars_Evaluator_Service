@@ -3,6 +3,7 @@ import express, { Express } from "express";
 
 import bullBoardAdapter from "./config/bullBoard.config";
 import serverConfig from "./config/server.config";
+import runPython from "./containers/runPythonDocker";
 import apiRouter from "./routes";
 import SampleWorker from "./workers/sample.worker";
 
@@ -20,4 +21,12 @@ app.listen(serverConfig.PORT, () => {
     console.log(`Bullboard live on http://localhost:${serverConfig.PORT}/ui`);
 
     SampleWorker('SampleQueue');
+
+    const code = `
+x = input()
+print("value of x is", x)
+for i in range(int(x)):
+    print(i)
+    `;
+    runPython(code, "100");
 });
