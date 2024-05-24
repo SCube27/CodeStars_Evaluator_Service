@@ -1,29 +1,28 @@
 // import Docker from 'dockerode';
 
 // import { TestCases } from '../types/testCases';
-import { PYTHON_IMAGE } from '../utils/constants';
+import { CPP_IMAGE } from '../utils/constants';
 import createContainer from './containerFactory';
 import decodeDockerStream from './dockerHelper';
 import pullImage from './pullImage';
 
-async function runPython(code: string, inputTestCase: string) {
+async function runCpp(code: string, inputTestCase: string) {
     const rawLogBuffer: Buffer[] = [];
 
-    await pullImage(PYTHON_IMAGE); // Pulling the image if not present
-    const runCommand = `echo '${code.replace(/'/g, `'\\"`)}' > test.py && echo '${inputTestCase.replace(/'/g, `'\\"`)}' | python3 test.py`;
+    await pullImage(CPP_IMAGE); // Pulling the image if not present
+    const runCommand = `echo '${code.replace(/'/g, `'\\"`)}' > main.cpp && g++ main.cpp -o main && echo '${inputTestCase.replace(/'/g, `'\\"`)}' | ./main`;
 
-    // const pythonDockerContainer = await createContainer(PYTHON_IMAGE, ['python', '-c', code, 'stty -echo']);
-    const pythonDockerContainer = await createContainer(PYTHON_IMAGE, [
+    const cppDockerContainer = await createContainer(CPP_IMAGE, [
         '/bin/sh',
         '-c',
         runCommand
     ]);
 
     // Starting or Booting up the python docker container
-    await pythonDockerContainer.start();
+    await cppDockerContainer.start();
     console.log('Started the docker container');
 
-    const loggerStream = await pythonDockerContainer.logs({
+    const loggerStream = await cppDockerContainer.logs({
         stdout: true,
         stderr: true,
         timestamps: false,
@@ -45,7 +44,7 @@ async function runPython(code: string, inputTestCase: string) {
     });
 
     // remove the container once the process is done
-    await pythonDockerContainer.remove();
+    await cppDockerContainer.remove();
 }
 
-export default runPython;
+export default runCpp;
