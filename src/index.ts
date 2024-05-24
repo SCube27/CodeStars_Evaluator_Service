@@ -25,8 +25,6 @@ app.listen(serverConfig.PORT, () => {
     const code = `
 x = input()
 print("value of x is", x)
-for i in range(int(x)):
-    print(i)
     `;
     runPython(code, "100");
 });
