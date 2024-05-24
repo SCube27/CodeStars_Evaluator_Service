@@ -3,9 +3,11 @@ import express, { Express } from "express";
 
 import bullBoardAdapter from "./config/bullBoard.config";
 import serverConfig from "./config/server.config";
-import runCpp from "./containers/runCppDocker";
+import submissionQueueProducer from "./producers/submissionQueue.producer";
 import apiRouter from "./routes";
+import { sample_queue, submission_queue } from "./utils/constants";
 import SampleWorker from "./workers/sample.worker";
+import SubmissionWorker from "./workers/submission.worker";
 
 const app: Express = express();
 
@@ -20,21 +22,19 @@ app.listen(serverConfig.PORT, () => {
     console.log(`Server started at PORT ${serverConfig.PORT}`);
     console.log(`Bullboard live on http://localhost:${serverConfig.PORT}/ui`);
 
-    SampleWorker('SampleQueue');
+    SampleWorker(sample_queue);
+    SubmissionWorker(submission_queue);
 
     const code = `
-    #include<iostream>
-    using namespace std;
-
-    int main() {
-        int x;
-        cin >> x;
-        cout << "The value of x is" << x;
-        return 0;
-    }
+x = input()
+print("value of the x is", x)
     `;
 
     const inputCase = `100`;
 
-    runCpp(code, inputCase);
+    submissionQueueProducer({ "1234": {
+        language: "Python",
+        inputCase,
+        code
+    }});
 });

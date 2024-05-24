@@ -2,7 +2,7 @@ import { Job } from "bullmq";
 
 export interface IJob { // Interface Job (Basic structure for a Job)
     name: string
-    payload?: Record<string, undefined> // Optional parameter (Object = (keys[string] : values[undefined] ))
+    payload?: Record<string, unknown> // Optional parameter (Object = (keys[string] : values[undefined] ))
     handle?: (job?: Job) => void // expects an argument of type BullMQ Job and return type as void
     failed?: (job?: Job) => void 
 }
