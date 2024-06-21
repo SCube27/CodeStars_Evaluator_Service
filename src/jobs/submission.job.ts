@@ -1,10 +1,9 @@
 import { Job } from "bullmq";
 
-import runCpp from "../containers/runCppDocker";
-import runJava from "../containers/runJavaDocker";
-import runPython from "../containers/runPythonDocker";
 import { IJob } from "../types/bullMqJobDefinition";
 import { SubmissionPayload } from "../types/submissionPayload";
+import createExecutor from "../utils/executorFactory";
+import { ExecutionResponse } from "../types/codeExecutorStrategy";
 
 export default class SubmissionJob implements IJob {
     name: string;
@@ -19,24 +18,21 @@ export default class SubmissionJob implements IJob {
         console.log(this.payload);
         if(job) {
             const key = Object.keys(this.payload)[0];
-            console.log(this.payload[key].language);
-            
-            // check for python
-            if(this.payload[key].language === "Python") {
-                const response = await runPython(this.payload[key].code, this.payload[key].inputCase);
-                console.log("Evaluated response is:", response);
-            } 
-            
-            // check for cpp
-            else if(this.payload[key].language === "CPP") {
-                const response = await runCpp(this.payload[key].code, this.payload[key].inputCase);
-                console.log("Evaluated response is:", response);
-            } 
-            
-            // check for java
-            else if(this.payload[key].language === "Java") {
-                const response = await runJava(this.payload[key].code, this.payload[key].inputCase);
-                console.log("Evaluated response is:", response);
+            const codeLanguage = this.payload[key].language;
+            const code = this.payload[key].code;
+            const inputTestCase = this.payload[key].inputCase;
+ 
+            const strategy = createExecutor(codeLanguage);
+
+            if(strategy !== null) {
+                const response: ExecutionResponse = await strategy.execute(code, inputTestCase);
+                if(response.status === "COMPLETED") {
+                    console.log("Code Executed Successfully");
+                    console.log(response);
+                } else {
+                    console.log("Something went wrong with the response!");
+                    console.log(response);
+                }
             }
         }
     };
