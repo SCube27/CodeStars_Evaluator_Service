@@ -41,7 +41,7 @@ class PythonExecutor implements CodeExecutorStrategy {
             const codeResponse: string = await this.fetchDecodedStream(loggerStream, rawLogBuffer);    
             return {output: codeResponse, status: "COMPLETED"};
         } catch (error) {
-            return {output: error as string, status: "ERROR"}
+            return {output: error as string, status: "ERROR"};
         } finally {
             // remove the container once the process is done
             await pythonDockerContainer.remove();
@@ -56,7 +56,7 @@ class PythonExecutor implements CodeExecutorStrategy {
                 console.log(decodedStream);
                 
                 if(decodedStream.stderr) {
-                    reject(decodedStream.stderr)
+                    reject(decodedStream.stderr);
                 } else {
                     resolve(decodedStream.stdout);
                 }

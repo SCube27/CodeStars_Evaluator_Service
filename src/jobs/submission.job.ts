@@ -1,9 +1,9 @@
 import { Job } from "bullmq";
 
 import { IJob } from "../types/bullMqJobDefinition";
+import { ExecutionResponse } from "../types/codeExecutorStrategy";
 import { SubmissionPayload } from "../types/submissionPayload";
 import createExecutor from "../utils/executorFactory";
-import { ExecutionResponse } from "../types/codeExecutorStrategy";
 
 export default class SubmissionJob implements IJob {
     name: string;
