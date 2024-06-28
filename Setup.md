@@ -10,7 +10,7 @@ npm init
 npm install -D typescript
 ```
 
-3. Initialize a tsconfig file for typescript modiifications:
+3. Initialize a tsconfig file for typescript modifications:
 ```
 tsc --init
 ```
